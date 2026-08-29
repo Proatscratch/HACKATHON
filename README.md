@@ -10,8 +10,6 @@ Evomusic is the product and experience. This repository contains the open-source
 
 Evomusic is an adaptive study companion built to help students maintain focus during long study sessions. It responds to changes in attention, stress, and performance by adjusting the sound environment to support calmer, more productive work.
 
-The website is secondary to the core idea: it exists to introduce, entertain, and explain the Evomusic experience. The real focus is the concept of adaptive music for study flow.
-
 ## Website
 
 evomusic.netlify.app
