@@ -43,7 +43,7 @@ git commit -m “feat(evol-alg): evolutionary alg for music”
 git branch -M main
 git push -u origin main
 git pull
-Note I (Vismai) will probably force you all to install taskfile to do this for you
+Note I (Vismai) will probably force you all to install taskfile to do this for you \\ (L1br@ryUs3r)
 
 Plan (To be done in hackathon)
 All Behavior voting results should be done here.
