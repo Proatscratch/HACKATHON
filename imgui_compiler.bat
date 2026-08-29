@@ -1,0 +1,1 @@
+g++ -c imgui.cpp imgui_draw.cpp imgui_widgets.cpp imgui_tables.cpp imgui_impl_sdl2.cpp imgui_impl_sdlrenderer2.cpp -O3 -std=c++20 -Wno-narrowing

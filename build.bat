@@ -1,0 +1,1 @@
+gcc main.c -O3 -g texteditor.o imgui.o imgui_draw.o imgui_widgets.o  imgui_tables.o imgui_impl_sdl2.o imgui_impl_sdlrenderer2.o -Wno-narrowing -lsdl2 -lSDL2_image -lSDL2_mixer -lstdc++
