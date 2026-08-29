@@ -27,6 +27,5 @@ This project communicates the Evomusic vision through a minimal, editorial inter
 ## Notes
 
 - This is an open-source front-end project built with plain C++, Go, and Python.
-- The website is a presentation layer for Evomusic, not the main product itself.
 - This project is intended to run on macOS only.
 
