@@ -2,7 +2,7 @@ Build something to help students have healthy habits
 # EVOMUSIC
 
 # important notes
-YOU MUST HAVE SDL2 TO RUN
+YOU MUST HAVE SDL2 AND VLC TO RUN 
 
 # evomusic
 
