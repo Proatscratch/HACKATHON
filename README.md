@@ -48,3 +48,33 @@ Note I (Vismai) will probably force you all to install taskfile to do this for y
 
 Plan (To be done in hackathon)
 All Behavior voting results should be done here.
+
+
+
+
+# evomusic
+
+Evomusic is the product and experience. This repository contains the open-source code for the Evomusic project, including the website that presents it.
+
+## Overview
+
+Evomusic is an adaptive study companion built to help students maintain focus during long study sessions. It responds to changes in attention, stress, and performance by adjusting the sound environment to support calmer, more productive work.
+
+The website is secondary to the core idea: it exists to introduce, entertain, and explain the Evomusic experience. The real focus is the concept of adaptive music for study flow.
+
+## Purpose
+
+This project communicates the Evomusic vision through a minimal, editorial interface and a music-driven visual language. The goal is to entertain the audience with the product concept first, while the website simply presents it.
+
+## Credits
+
+- Vismai Nair
+- Eklavya Saini
+- Anish Deeduvanu
+
+## Notes
+
+- This is an open-source front-end project built with plain C++, Go, and Python.
+- The website is a presentation layer for Evomusic, not the main product itself.
+- This project is intended to run on macOS only.
+
