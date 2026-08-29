@@ -34,14 +34,15 @@ func midiNotes(rootNote int8, semitones []int8) []noteevent.NoteEvent {
 	return events
 }
 
-func MakeMidiFile(rootNote uint8, semitones []int8) {
+func MakeMidiFile(rootNote uint8, semitones []int8, bpm uint16) {
 	// 1. Setup the MIDI file template (960 ticks per quarter note)
 	s := smf.New()
 	s.TimeFormat = smf.MetricTicks(960)
 
 	var tr smf.Track
+	tr.Add(0, smf.MetaTempo(float64(bpm)))
 	tr.Add(0, smf.MetaTrackSequenceName("Interval Melody"))
-	tr.Add(0, midi.ProgramChange(0, uint8(gm.Instr_ElectricGrandPiano))) // Acoustic Grand Piano
+	tr.Add(0, midi.ProgramChange(0, uint8(gm.Instr_Violin))) // Acoustic Grand Piano
 
 	// 2. Generate the events using your helper function
 	events := midiNotes(int8(rootNote), semitones)
