@@ -5,8 +5,6 @@ import (
 	"log"
 	"math/rand/v2"
 	"os"
-	"os/exec"
-	"runtime"
 	"sort"
 
 	"github.com/proatscratch/hackathon/evomusic/midioutput"
@@ -24,30 +22,6 @@ func randomOrganism() Organism {
 	bpm := minBPM + uint16(rand.IntN(int(maxBPM-minBPM+1)))
 	transpose := int8(rand.IntN(36) - 12)
 	return Organism{BPM: bpm, Transpose: transpose}
-}
-
-// playMidi invokes the default system MIDI player
-func playMidi(filename string) {
-	var cmd *exec.Cmd
-	switch runtime.GOOS {
-	case "darwin":
-		cmd = exec.Command("afplay", filename)
-	case "windows":
-		// 'start /wait' opens the default player and waits for it to finish
-		cmd = exec.Command("cmd", "/c", "start", "/wait", filename)
-	case "linux":
-		// timidity is the most common CLI midi player for linux
-		cmd = exec.Command("timidity", filename)
-	default:
-		fmt.Println("Audio playback not supported on this OS. Please open the file manually.")
-		return
-	}
-
-	fmt.Printf("▶️ Playing %s...\n", filename)
-	err := cmd.Run()
-	if err != nil {
-		fmt.Printf("Playback interrupted or player not found: %v\n", err)
-	}
 }
 
 func main() {
@@ -72,9 +46,6 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-
-			// Play the generated file so the user can evaluate it
-			playMidi(fileName + ".mid")
 
 			fmt.Printf("Organism %d [BPM: %d | Transpose: %d] -> Enter deletion rate (0-100, lower is better): ", i+1, org.BPM, org.Transpose)
 
