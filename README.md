@@ -1,3 +1,4 @@
+Build something to help students have healthy habits
 # HACKATHON
 ONE OF A KIND!
 Design Document
