@@ -3,82 +3,95 @@ package midioutput
 import (
 	"fmt"
 	"math/rand/v2"
+	"time" // Make sure time is imported
 
 	"gitlab.com/gomidi/midi/v2"
 	"gitlab.com/gomidi/midi/v2/smf"
 )
 
-// MakeMidiFile selects a random Bach chorale, transposes its notes, sets a custom BPM, and saves it.
+// MakeMidiFile selects a random Bach chorale, transposes its notes, sets a custom BPM, cuts it to 30s, and saves it.
 func MakeMidiFile(title string, bpm uint16, transpose int8) error {
-	// 1. Pick a random Bach chorale
 	randNum := rand.IntN(372)
 	choraleFile := fmt.Sprintf("../motif-find/jsb_chorales_midi/bach_chorale_%d.mid", randNum)
 
-	// Read the selected chorale
 	choraleSMF, err := smf.ReadFile(choraleFile)
 	if err != nil {
 		return fmt.Errorf("failed to read target midi file %s: %v", choraleFile, err)
 	}
 
-	// 2. Setup the new SMF, inheriting the time format
 	newSMF := smf.New()
 	newSMF.TimeFormat = choraleSMF.TimeFormat
 
-	// 3. Iterate through all tracks and events to shift pitch and set tempo
+	// Calculate maximum ticks for 30 seconds using the built-in Ticks() method
+	var maxTicks uint32
+	if metric, ok := choraleSMF.TimeFormat.(smf.MetricTicks); ok {
+		// Pass the BPM and the desired duration
+		maxTicks = metric.Ticks(float64(bpm), 30*time.Second)
+	} else {
+		// Fallback for SMPTE timecode formats
+		maxTicks = uint32(bpm) * 480 / 2
+	}
+
 	for _, track := range choraleSMF.Tracks {
 		var newTrack smf.Track
+		var currentTicks uint32
+
+		// Track active notes to turn them off when cutting the track
+		activeNotes := make(map[[2]uint8]bool)
 
 		for _, ev := range track {
 			delta := ev.Delta
 			msg := ev.Message
 
+			// If this event pushes us past 30 seconds, close all notes and end the track
+			if currentTicks+delta >= maxTicks {
+				remainingDelta := maxTicks - currentTicks
+				firstOff := true
+
+				for chKey := range activeNotes {
+					ch, k := chKey[0], chKey[1]
+					d := remainingDelta
+					if !firstOff {
+						d = 0 // Only advance time for the first note-off
+					}
+					firstOff = false
+					newTrack.Add(d, smf.Message(midi.NoteOff(ch, k)))
+				}
+				break // Stop processing this track
+			}
+
+			currentTicks += delta
+
 			var ch, key, vel uint8
 			var trackBPM float64
 
 			switch {
-			// Intercept NoteOn messages to transpose pitch
 			case msg.GetNoteOn(&ch, &key, &vel):
-				newKey := int(key) + int(transpose)
-				if newKey < 0 {
-					newKey = 0
-				}
-				if newKey > 127 {
-					newKey = 127
-				}
+				newKey := clampKey(int(key) + int(transpose))
+				msg = smf.Message(midi.NoteOn(ch, newKey, vel))
 
-				// Cast midi.Message to smf.Message
-				msg = smf.Message(midi.NoteOn(ch, uint8(newKey), vel))
-
-			// Intercept NoteOff messages to transpose pitch
-			case msg.GetNoteOff(&ch, &key, &vel): // NoteOff in gomidi v2 gives ch, key, vel
-				newKey := int(key) + int(transpose)
-				if newKey < 0 {
-					newKey = 0
-				}
-				if newKey > 127 {
-					newKey = 127
+				if vel > 0 {
+					activeNotes[[2]uint8{ch, newKey}] = true
+				} else {
+					delete(activeNotes, [2]uint8{ch, newKey})
 				}
 
-				// Cast midi.Message to smf.Message
-				msg = smf.Message(midi.NoteOff(ch, uint8(newKey)))
+			case msg.GetNoteOff(&ch, &key, &vel):
+				newKey := clampKey(int(key) + int(transpose))
+				msg = smf.Message(midi.NoteOff(ch, newKey))
+				delete(activeNotes, [2]uint8{ch, newKey})
 
-			// Intercept Tempo changes to enforce our requested BPM
 			case msg.GetMetaTempo(&trackBPM):
 				if bpm > 0 {
-					// smf.MetaTempo already returns an smf.Message, so no cast needed here
 					msg = smf.MetaTempo(float64(bpm))
 				}
 			}
 
-			// Add the modified (or original) event to our new track
 			newTrack.Add(delta, msg)
 		}
-
-		// Add the processed track to the new SMF
 		newSMF.Add(newTrack)
 	}
 
-	// 4. Write the modified tracks to the new output file
 	outputPath := fmt.Sprintf("%s.mid", title)
 	err = newSMF.WriteFile(outputPath)
 	if err != nil {
@@ -87,4 +100,14 @@ func MakeMidiFile(title string, bpm uint16, transpose int8) error {
 
 	fmt.Printf("Successfully transposed and saved %s -> %s\n", choraleFile, outputPath)
 	return nil
+}
+
+func clampKey(k int) uint8 {
+	if k < 0 {
+		return 0
+	}
+	if k > 127 {
+		return 127
+	}
+	return uint8(k)
 }

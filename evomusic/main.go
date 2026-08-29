@@ -21,11 +21,11 @@ type Organism struct {
 
 // randomOrganism generates completely random starting traits
 func randomOrganism() Organism {
-	minBPM, maxBPM := uint16(60), uint16(120)
+	minBPM, maxBPM := uint16(40), uint16(120)
 	bpm := minBPM + uint16(rand.IntN(int(maxBPM-minBPM+1)))
 
 	// Random transpose between -12 and +12
-	transpose := int8(rand.IntN(25) - 12)
+	transpose := int8(rand.IntN(36) - 12)
 
 	return Organism{BPM: bpm, Transpose: transpose}
 }
