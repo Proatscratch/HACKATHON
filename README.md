@@ -1,5 +1,5 @@
 Build something to help students have healthy habits
-# HACKATHON
+# EVOMUSIC
 
 
 # evomusic
