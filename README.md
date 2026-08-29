@@ -54,7 +54,7 @@ All Behavior voting results should be done here.
 
 # evomusic
 
-Evomusic is the product and experience. This repository contains the open-source code for the Evomusic project, including the website that presents it.
+Evomusic is the product and experience. This repository contains the open-source code for the Evomusic project.
 
 ## Overview
 
