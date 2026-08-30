@@ -1,12 +1,11 @@
 #define SDL_MAIN_HANDLED
-#include <SDL2/SDL.h>
+#include </opt/homebrew/include/SDL2/SDL.h>
 #include <iostream>
 #include <stdio.h>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer2.h"
-#include <glm/glm.hpp>
 #include "imgui_internal.h"
 //gui/imgui.cpp gui/imgui_impl_sdl2.cpp gui/imgui_impl_sdlrenderer2.cpp gui/imgui_internal.cpp
 #define FILEDATASIZES 1000
@@ -89,17 +88,16 @@ void RenderUTF8TypewriterArea(ImVec2& sz, int &typing) {
 }
 void insert(const char *C) {
     
-        strcpy_s(g_char_to_insert,C);
+        strcpy(g_char_to_insert,C);
         g_insert_request = true;
 }
 #include <stdlib.h>
 float DELETE_G;
-extern "C" {
 float GetDeleteVal() {
     return DELETE_G;
 }
 void GOFUNCTION();
-int fn() {
+int main() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         printf("SDL_Init Error: %s\n", SDL_GetError());
         return 1;
@@ -144,13 +142,13 @@ int fn() {
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     
-    ImFont* custom_font = io.Fonts->AddFontFromFileTTF("c:/Windows/Fonts/segoeui.ttf", 32.0f);
-    ImFontConfig config;
-    config.MergeMode = true;
-    config.PixelSnapH = true;
-    
-    static const ImWchar emoji_ranges[] = { 0x0020, 0x00FF, 0x1F300, 0x1FAFF, 0 }; 
-    io.Fonts->AddFontFromFileTTF("c:/Windows/Fonts/seguiemj.ttf", 32.0f, &config, emoji_ranges);
+    ImFont* custom_font = io.Fonts->AddFontFromFileTTF("/System/Library/Fonts/Helvetica.ttc", 32.0f);
+ImFontConfig config;
+config.MergeMode = true;
+config.PixelSnapH = true;
+
+static const ImWchar emoji_ranges[] = { 0x0020, 0x00FF, 0x1F300, 0x1FAFF, 0 }; 
+io.Fonts->AddFontFromFileTTF("/System/Library/Fonts/Apple Color Emoji.ttc", 32.0f, &config, emoji_ranges);
 
     io.Fonts->Build();
     int fontSize;
@@ -217,10 +215,10 @@ int fn() {
         ImVec2 sub = sz;
         sub.y -= 10;
         ImVec2 zero = {0, 0};
-        glm::ivec2 p;
-        SDL_GetRendererOutputSize(renderer, &p.x, &p.y);
-        sz.x = p.x;
-        sz.y = p.y;
+        int px, py;
+        SDL_GetRendererOutputSize(renderer, &px, &py);
+        sz.x = px;
+        sz.y = py;
         ImGui::SetNextWindowSize(sz);
         ImGui::SetNextWindowPos(zero);
         ImGui::Begin("TextEditor", &open, ImGuiWindowFlags_MenuBar);
@@ -285,4 +283,4 @@ int fn() {
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
-}}
+}
